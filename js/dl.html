@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download and MD5 Hash</title>
+    <!-- Include a MD5 library, for example, blueimp-md5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</head>
+<body>
+    <h1>Download File and Calculate MD5</h1>
+    <input type="text" id="fileUrl" value="https://example.com/somefile.txt" placeholder="Enter file URL">
+    <button onclick="downloadAndHash()">Download & Calculate MD5</button>
+    <p>MD5 Hash: <span id="md5Hash"></span></p>
+
+    <script>
+        async function downloadAndHash() {
+            const fileUrl = document.getElementById('fileUrl').value;
+            const md5HashSpan = document.getElementById('md5Hash');
+            md5HashSpan.textContent = 'Calculating...';
+
+            try {
+                // 1. Fetch the file content
+                const response = await fetch(fileUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+
+                // 2. Calculate the MD5 hash
+                // The blueimp-md5 library expects a string or an ArrayBuffer/Uint8Array
+                const hash = md5(uint8Array); 
+                md5HashSpan.textContent = hash;
+
+            } catch (error) {
+                console.error("Error:", error);
+                md5HashSpan.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
